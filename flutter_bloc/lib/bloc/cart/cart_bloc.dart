@@ -50,4 +50,23 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       emit(const CartLoaded());
     });
   }
+
+  //Что-то не так
+  int getCountInCart(product) {
+    CartProduct? itemFound;
+    final state = this.state;
+    if (state is CartLoaded) {
+      for (var i = 0; i < state.cart.length; i++) {
+        if (state.cart[i].product.id == product.id) {
+          itemFound = state.cart[i];
+          print('count ${itemFound.count}');
+          return itemFound.count;
+        }
+      }
+      print('count 0');
+      return 0;
+    } else {
+      return 0;
+    }
+  }
 }

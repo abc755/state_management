@@ -42,9 +42,10 @@ class CatalogPage extends StatelessWidget {
                                             .read<CartBloc>()
                                             .add(ProductRemoved(item));
                                       }),
-                                  Text(state
-                                      .getCountInCart(item)
-                                      .toString()),
+                                  // Text(state
+                                  //     .getCountInCart(item)
+                                  //     .toString()),
+                                  Text(context.read<CartBloc>().getCountInCart(item).toString()),
                                   IconButton(
                                       icon: const Icon(Icons.add),
                                       onPressed: () {
