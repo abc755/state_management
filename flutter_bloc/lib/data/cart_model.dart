@@ -1,4 +1,4 @@
-import 'package:simple_state_management/data/product_model.dart';
+import 'package:flutter_bloc_project/data/product_model.dart';
 
 class CartProduct {
   final Product product;

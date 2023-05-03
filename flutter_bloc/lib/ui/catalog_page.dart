@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_state_management/business/product_controller.dart';
+import 'package:flutter_bloc_project/bloc/cart/cart_bloc.dart';
+import 'package:flutter_bloc_project/bloc/catalog/catalog_bloc.dart';
 
 class CatalogPage extends StatelessWidget {
   const CatalogPage({super.key});
@@ -9,50 +10,62 @@ class CatalogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Каталог'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () => context.go('/catalog/cart'),
-          ),
-        ],
-      ),
-      body: ListView(
-        children: [
-          ...context.watch<CartState>().products.map(
-                (product) => Card(
-                  child: ListTile(
-                    leading: Image.network(product.image),
-                    title: Text(product.name),
-                    trailing: SizedBox(
-                      width: 120,
-                      child: Row(
-                        children: [
-                          IconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: () {
-                                context
-                                    .read<CartState>()
-                                    .removeFromCart(product);
-                              }),
-                          Text(context
-                              .read<CartState>()
-                              .getCountInCart(product)
-                              .toString()),
-                          IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () {
-                                context.read<CartState>().addToCart(product);
-                              }),
-                        ],
+        appBar: AppBar(
+          title: const Text('Каталог'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () => context.go('/catalog/cart'),
+            ),
+          ],
+        ),
+        body: BlocBuilder<CatalogBloc, CatalogState>(builder: (context, state) {
+          if (state is CatalogLoaded) {
+            return ListView(
+              children: [
+                ...state.products.map(
+                  (item) => Card(
+                    child: ListTile(
+                      leading: Image.network(item.image),
+                      title: Text(item.name),
+                      trailing: SizedBox(
+                        width: 120,
+                        child: BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                            if (state is CartLoaded) {
+                              return Row(
+                                children: [
+                                  IconButton(
+                                      icon: const Icon(Icons.remove),
+                                      onPressed: () {
+                                        context
+                                            .read<CartBloc>()
+                                            .add(ProductRemoved(item));
+                                      }),
+                                  Text(state
+                                      .getCountInCart(item)
+                                      .toString()),
+                                  IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        context
+                                            .read<CartBloc>()
+                                            .add(ProductAdded(item));
+                                      }),
+                                ],
+                              );
+                            }
+                            return const CircularProgressIndicator();
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-              )
-        ],
-      ),
-    );
+                )
+              ],
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        }));
   }
 }
