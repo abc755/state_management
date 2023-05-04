@@ -15,7 +15,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<ProductAdded>((event, emit) {
       final state = this.state;
       if (state is CartLoaded) {
-        List<CartProduct> newItems = [...state.cart];
+        final List<CartProduct> newItems = state.cart.map((el) => CartProduct.clone(el)).toList();
         for (var i = 0; i < newItems.length; i++) {
           if (newItems[i].product.id == event.product.id) {
             newItems[i].count++;
@@ -30,7 +30,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<ProductRemoved>((event, emit) {
       final state = this.state;
       if (state is CartLoaded) {
-        List<CartProduct> newItems = [...state.cart];
+        final List<CartProduct> newItems = state.cart.map((el) => CartProduct.clone(el)).toList();
         CartProduct? itemFound;
         for (var i = 0; i < newItems.length; i++) {
           if (newItems[i].product.id == event.product.id) {
@@ -51,7 +51,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     });
   }
 
-  //Что-то не так
   int getCountInCart(product) {
     CartProduct? itemFound;
     final state = this.state;
@@ -59,11 +58,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       for (var i = 0; i < state.cart.length; i++) {
         if (state.cart[i].product.id == product.id) {
           itemFound = state.cart[i];
-          print('count ${itemFound.count}');
           return itemFound.count;
         }
       }
-      print('count 0');
       return 0;
     } else {
       return 0;

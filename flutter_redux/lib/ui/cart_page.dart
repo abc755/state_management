@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../business/product_controller.dart';
 
 class CartPage extends StatelessWidget {

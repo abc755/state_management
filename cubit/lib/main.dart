@@ -1,8 +1,9 @@
+import 'package:cubit/cubit/cart/cart_cubit.dart';
+import 'package:cubit/cubit/catalog/catalog_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_state_management/business/product_controller.dart';
-import 'package:simple_state_management/ui/cart_page.dart';
-import 'package:simple_state_management/ui/catalog_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cubit/ui/cart_page.dart';
+import 'package:cubit/ui/catalog_page.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
@@ -32,8 +33,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CartState(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CatalogCubit>(create: (_) => CatalogCubit()),
+        BlocProvider<CartCubit>(create: (_) => CartCubit()),
+      ],
       child: MaterialApp.router(
         title: 'State Management',
         theme: ThemeData(

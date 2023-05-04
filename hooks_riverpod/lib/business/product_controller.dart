@@ -1,52 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:simple_state_management/data/cart_model.dart';
-import 'package:simple_state_management/data/product_model.dart';
+import 'package:hooks_riverpod_project/data/cart_model.dart';
+import 'package:hooks_riverpod_project/data/product_model.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CartState with ChangeNotifier {
-  List<Product> products = getProducts();
-  List<CartProduct> cart = [];
+final productsProvider = Provider<List<Product>>((_) {
+  return getProducts();
+});
 
-  int getCountInCart(product) {
-    CartProduct? itemFound;
-    for (var i = 0; i < cart.length; i++) {
-      if (cart[i].product.id == product.id) {
-        itemFound = cart[i];
-        return itemFound.count;
-      }
-    }
-    return 0;
-  }
+final cartProvider =
+StateNotifierProvider<CartState, List<CartProduct>>((ref) => CartState());
+
+class CartState extends StateNotifier<List<CartProduct>> {
+  CartState() : super([]);
 
   void addToCart(Product product) {
-    for (var i = 0; i < cart.length; i++) {
-      if (cart[i].product.id == product.id) {
-        cart[i].count++;
-        notifyListeners();
+    final List<CartProduct> newState = state.map((el) => CartProduct.clone(el)).toList();
+    for (var i = 0; i < newState.length; i++) {
+      if (newState[i].product.id == product.id) {
+        newState[i].count++;
+        state = newState;
         return;
       }
     }
-    cart.add(CartProduct(product, 1));
-    notifyListeners();
+    newState.add(CartProduct(product, 1));
+    state = newState;
   }
 
   void removeFromCart(Product product) {
+    final List<CartProduct> newState = state.map((el) => CartProduct.clone(el)).toList();
     CartProduct? itemFound;
-    for (var i = 0; i < cart.length; i++) {
-      if (cart[i].product.id == product.id) {
-        itemFound = cart[i];
+    for (var i = 0; i < newState.length; i++) {
+      if (newState[i].product.id == product.id) {
+        itemFound = newState[i];
         if (itemFound.count > 1) {
-          cart[i].count--;
+          newState[i].count--;
         } else {
-          cart.remove(itemFound);
+          newState.remove(itemFound);
         }
-        notifyListeners();
+        state = newState;
         return;
       }
     }
   }
 
   void clearCart() {
-    cart.clear();
-    notifyListeners();
+    final newState = <CartProduct>[];
+    state = newState;
   }
+
+  int getCountInCart(Product product) {
+    CartProduct? itemFound;
+    for (var i = 0; i < state.length; i++) {
+      if (state[i].product.id == product.id) {
+        itemFound = state[i];
+        return itemFound.count;
+      }
+    }
+    return 0;
+  }
+
 }
+

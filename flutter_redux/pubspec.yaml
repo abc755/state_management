@@ -1,4 +1,4 @@
-name: flutter_redux
+name: flutter_redux_project
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^6.5.5
+  redux: ^5.0.0
+  flutter_redux: ^0.10.0
 
 
   # The following adds the Cupertino Icons font to your application.

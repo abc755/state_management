@@ -5,4 +5,11 @@ class CartProduct {
   late int count;
 
   CartProduct(this.product, this.count);
+
+  factory CartProduct.clone(CartProduct source) {
+    return CartProduct (
+      source.product,
+      source.count,
+    );
+  }
 }

@@ -8,6 +8,16 @@ class CatalogPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cart = ref.watch(cartProvider);
+    int getCount(id) {
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].product.id == id) {
+          return cart[i].count;
+        }
+      }
+      return 0;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Каталог'),
@@ -38,10 +48,7 @@ class CatalogPage extends ConsumerWidget {
                               }),
                           Consumer(
                             builder: (context, ref, child) {
-                              return Text(ref
-                                  .watch(cartProvider.notifier)
-                                  .getCountInCart(product)
-                                  .toString());
+                              return Text(getCount(product.id).toString());
                             },
                           ),
                           IconButton(

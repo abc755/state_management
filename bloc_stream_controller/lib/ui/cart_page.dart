@@ -1,6 +1,7 @@
+import 'package:bloc_stream_controller/data/cart_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../business/product_controller.dart';
+import 'package:bloc_stream_controller/bloc/cart_bloc.dart';
+import 'package:bloc_stream_controller/bloc/catalog_bloc.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -14,25 +15,33 @@ class CartPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
-              context.read<CartState>().clearCart();
+              cartBloc.onCartClear();
             },
           ),
         ],
       ),
-      body: context.watch<CartState>().cart.isEmpty
-          ? const Center(
-              child: Text('Ваша корзина пуста'),
-            )
-          : ListView(
-              children: [
-                ...context.watch<CartState>().cart.map(
+      body: StreamBuilder<List<CartProduct>>(
+          initialData: cartBloc.cart,
+          stream: cartBloc.state,
+          builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          return snapshot.data!.isEmpty
+              ? const Center(
+                  child: Text('Ваша корзина пуста'),
+                )
+              : ListView(
+                  children: [
+                    ...snapshot.data!.map(
                       (item) => ListTile(
                         title: Text(item.product.name),
                         subtitle: Text("Количество в корзине ${item.count}"),
                       ),
                     ),
-              ],
-            ),
+                  ],
+                );
+        }
+        return const Center(child: CircularProgressIndicator());
+      }),
     );
   }
 }

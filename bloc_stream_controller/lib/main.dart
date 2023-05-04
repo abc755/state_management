@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_state_management/business/product_controller.dart';
-import 'package:simple_state_management/ui/cart_page.dart';
-import 'package:simple_state_management/ui/catalog_page.dart';
+import 'package:bloc_stream_controller/ui/cart_page.dart';
+import 'package:bloc_stream_controller/ui/catalog_page.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:bloc_stream_controller/bloc/cart_bloc.dart';
+import 'package:bloc_stream_controller/bloc/catalog_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,20 +28,29 @@ GoRouter router() {
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  MyAppState createState() => MyAppState();
+}
+class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CartState(),
-      child: MaterialApp.router(
-        title: 'State Management',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        routerConfig: router(),
+    return MaterialApp.router(
+      title: 'State Management',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      routerConfig: router(),
     );
+  }
+
+  @override
+  void dispose() {
+    catalogBloc.dispose();
+    cartBloc.dispose();
+    super.dispose();
   }
 }

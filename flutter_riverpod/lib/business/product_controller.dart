@@ -7,13 +7,13 @@ final productsProvider = Provider<List<Product>>((_) {
 });
 
 final cartProvider =
-    StateNotifierProvider<CartState, List<CartProduct>>((_) => CartState([]));
+    StateNotifierProvider<CartState, List<CartProduct>>((ref) => CartState());
 
 class CartState extends StateNotifier<List<CartProduct>> {
-  CartState(super.state);
+  CartState() : super([]);
 
   void addToCart(Product product) {
-    var newState = state;
+    final List<CartProduct> newState = state.map((el) => CartProduct.clone(el)).toList();
     for (var i = 0; i < newState.length; i++) {
       if (newState[i].product.id == product.id) {
         newState[i].count++;
@@ -26,7 +26,7 @@ class CartState extends StateNotifier<List<CartProduct>> {
   }
 
   void removeFromCart(Product product) {
-    var newState = state;
+    final List<CartProduct> newState = state.map((el) => CartProduct.clone(el)).toList();
     CartProduct? itemFound;
     for (var i = 0; i < newState.length; i++) {
       if (newState[i].product.id == product.id) {
@@ -43,8 +43,7 @@ class CartState extends StateNotifier<List<CartProduct>> {
   }
 
   void clearCart() {
-    var newState = state;
-    newState.clear();
+    final newState = <CartProduct>[];
     state = newState;
   }
 
