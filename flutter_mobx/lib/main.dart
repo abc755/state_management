@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:simple_state_management/business/product_controller.dart';
-import 'package:simple_state_management/ui/cart_page.dart';
-import 'package:simple_state_management/ui/catalog_page.dart';
+import 'package:flutter_mobx_project/mobx/state.dart';
+import 'package:flutter_mobx_project/ui/cart_page.dart';
+import 'package:flutter_mobx_project/ui/catalog_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 GoRouter router() {
@@ -14,11 +14,11 @@ GoRouter router() {
     routes: [
       GoRoute(
         path: '/catalog',
-        builder: (context, state) => const CatalogPage(),
+        builder: (context, state) => CatalogPage(),
         routes: [
           GoRoute(
             path: 'cart',
-            builder: (context, state) => const CartPage(),
+            builder: (context, state) => CartPage(),
           ),
         ],
       ),
@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CartState(),
+    return Provider(
+      create: (context) => AppState(),
       child: MaterialApp.router(
         title: 'State Management',
         theme: ThemeData(

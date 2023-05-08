@@ -33,6 +33,7 @@ dependencies:
   go_router: ^6.5.5
   redux: ^5.0.0
   flutter_redux: ^0.10.0
+  collection: ^1.17.0
 
 
   # The following adds the Cupertino Icons font to your application.
